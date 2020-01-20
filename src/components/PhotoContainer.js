@@ -5,10 +5,11 @@ import NoResults from './NoResults';
 class PhotoContainer extends Component {
   
   render() {
+  const resultsFound = this.props.data.length > 0;
+
     return (
-      <div class="photo-container">
-        <Results />
-        <NoResults />
+      <div className="photo-container">
+        { resultsFound ? <Results data={this.props.data} /> : <NoResults /> }
       </div>
     );
   }
