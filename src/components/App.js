@@ -26,7 +26,8 @@ class App extends Component {
   }
 
   // re-render on back/forward
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
+    // updateQuery if query has somehow changed
     const { q } = queryString.parse(this.props.location.search);
     if (this.state.query !== q) {
       this.updateQuery(q);
@@ -78,7 +79,7 @@ class App extends Component {
     return (
       <div className="App">
         <SearchForm handleSearch={this.handleSearch} />
-        <Nav data={this.state.photos} updateQuery={this.updateQuery} />
+        <Nav updateQuery={this.updateQuery} query={this.state.query} />
         
         <Switch>
           <Route exact path="/" render={() => <PhotoContainer data={this.state.photos} /> } />
