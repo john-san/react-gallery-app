@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
 class SearchForm extends Component {
+
   handleSubmit = e => {
     e.preventDefault();
-    this.props.onSearch(this.query.value);
+    this.props.handleSearch(this.query.value);
     e.currentTarget.reset();
   }
   

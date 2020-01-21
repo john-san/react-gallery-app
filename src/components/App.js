@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import axios from 'axios';
+import queryString from 'query-string';
 
 import SearchForm from './SearchForm';
 import Nav from './Nav';
 import PhotoContainer from './PhotoContainer';
+import NotFound from './NotFound';
+
 import '../css/App.css';
 import apiKey from './../config';
 
 class App extends Component {
   constructor(props) {
     super(props);
-
-    console.log(props);
+    const { q } = queryString.parse(props.location.search);
     this.state = {
       photos: [],
-      query: props.location.pathname.slice(1)
+      query: q
     };
   } 
 
@@ -23,11 +25,22 @@ class App extends Component {
     this.performSearch();
   }
 
+  // re-render on back/forward
+  componentDidUpdate(prevProps) {
+    const { q } = queryString.parse(this.props.location.search);
+    if (this.state.query !== q) {
+      this.updateQuery(q);
+    }
+  }
+
+
   performSearch = (query = 'cats') => {
-    if (this.state.query.length > 0) {
+    if (this.state.query) {
       query = this.state.query;
     }
-    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
+    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
+
+    axios.get(getUrl)
       .then(response => {
         this.setState({
           photos: response.data.photos.photo
@@ -50,19 +63,33 @@ class App extends Component {
       this.performSearch
     )
   }
-  
 
+  // handle URLs properly when performing search
+  handleSearch = (newQuery) => {
+    this.props.history.push({
+      pathname: '/search',
+      search: `?q=${newQuery}`
+    });
+    
+    this.updateQuery(newQuery);
+  }
 
   render() {
     return (
       <div className="App">
-        <SearchForm onSearch={this.performSearch} />
+        <SearchForm handleSearch={this.handleSearch} />
         <Nav data={this.state.photos} updateQuery={this.updateQuery} />
         
-        <Route exact path="/" render={() => <PhotoContainer data={this.state.photos} /> } />
-        <Route path="/cats" render={() => <PhotoContainer data={this.state.photos} /> } />
-        <Route path="/dogs" render={() => <PhotoContainer data={this.state.photos} /> } />
-        <Route path="/computers" render={() => <PhotoContainer data={this.state.photos} /> } />
+        <Switch>
+          <Route exact path="/" render={() => <PhotoContainer data={this.state.photos} /> } />
+
+          {/* can't base route off query string 
+          https://stackoverflow.com/questions/54635470/how-to-render-components-with-query-strings-react-router */}
+
+          <Route path="/search" render={() => <PhotoContainer data={this.state.photos} /> } />
+
+          <Route component={NotFound} />
+        </Switch>
 
       </div>
     );
