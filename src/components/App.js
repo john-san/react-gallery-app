@@ -22,15 +22,22 @@ class App extends Component {
       defaultTopics: ["cats", "dogs", "computers"]
     };
 
-    this.fetchDefaultData()
+    this.fetchMultipleData()
       .then(response => {
-        console.log(response);
-        // const photos = response.reduce((cur, nex) => cur.data.concat(nex.data), [] )
+        const newState = this.state.defaultTopics
+          .map((topic, idx) =>  {
+            const obj = new Object();
+            obj[topic] = response[idx].data;
+            return obj;
+          });
+
+        this.setState({ defaultTopics: newState });
     });
   } 
 
   componentDidMount() {
     this.performSearch();
+    // this.getDefaultPhotos();
   }
 
   // re-render on back/forward
@@ -90,22 +97,51 @@ class App extends Component {
   fetchData = async (query) => {
     const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
     return await axios
-            .get(getUrl)
-            .then(response => {
-              // console.log(response);
-              return {
-                success: true,
-                data: response.data.photos.photo
-              }
-            })
-            .catch(error => {
-              console.log('Error fetching and parsing data', error);
-            });
+      .get(getUrl)
+      .then(response => {
+        // console.log(response);
+        return {
+          success: true,
+          data: response.data.photos.photo
+        }
+      })
+      .catch(error => {
+        console.log('Error fetching and parsing data', error);
+      });
   }
 
-  fetchDefaultData = async () => {
-    let networkingRequestPromises = this.state.defaultTopics.map(this.fetchData);
+  fetchMultipleData = async () => {
+    const networkingRequestPromises = this.state.defaultTopics.map(this.fetchData);
     return await Promise.all(networkingRequestPromises);
+  }
+
+  // get random 24 from 3 default topics
+  
+  getDefaultPhotos = () => {
+    const combined = this.state.defaultTopics
+      .map(topic => Object.values(topic)[0])
+      .reduce((a,b) => a.concat(b));
+    const shuffled = this.shuffleArray(combined);
+    const sliced = shuffled.slice(0,24);
+    // return sliced;
+    this.setState({
+      photos: sliced
+    })
+  }
+
+  // get 24 from 1 default topic
+
+  // Helper, borrowed from https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb
+  shuffleArray = array => {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * i)
+      const temp = copy[i]
+      copy[i] = copy[j]
+      copy[j] = temp
+    }
+  
+    return copy;
   }
 
   render() {
