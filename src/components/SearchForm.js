@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
+import { AppContext } from './Context';
+
+// const value = useContext(AppContext);
 
 class SearchForm extends Component {
-
+  
   handleSubmit = e => {
     e.preventDefault();
     this.props.handleSearch(this.query.value);

@@ -1,19 +1,29 @@
 import React from 'react';
+import { Consumer } from './Context';
 import Results from './Results';
 import NoResults from './NoResults';
 
-const PhotoContainer = props => {
-  const resultsFound = props.data.length > 0;
-
+const PhotoContainer = () => {
   return (
-    <div className="photo-container">
+    <Consumer>
       {
-        props.isLoading ?
-          <h2>Loading...</h2>
-        :
-          resultsFound ? <Results data={props.data} query={props.query} /> : <NoResults /> 
+        context => {
+          const resultsFound = context.photos.length > 0;
+
+          return (
+            <div className="photo-container">
+              {
+                context.loading ?
+                  <h2>Loading...</h2>
+                :
+                  resultsFound ? <Results /> : <NoResults /> 
+              }
+            </div>
+          );
+        }
       }
-    </div>
+    </Consumer>
+    
   );
 }
 

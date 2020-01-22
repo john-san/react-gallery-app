@@ -1,24 +1,28 @@
 import React from 'react';
+import { Consumer } from './Context';
 import MainNavLink from './MainNavLink';
 
-
-const Nav = ({query}) => {
-  const defaultTopics = [
-    "Cats",
-    "Dogs",
-    "Computers"
-  ];
-
-  const links = defaultTopics.map(
-    (topic, idx) => <MainNavLink topic={topic} query={query} key={idx} />
-  );
-
+const Nav = () => {
   return (
-  <nav className="main-nav">
-    <ul>
-      { links }
-    </ul>
-  </nav>
+    <Consumer>
+      {
+        context => {
+          const links = context.defaultTopics
+            .map((topic, idx) => 
+              <MainNavLink topic={topic} key={idx} />
+            );
+
+          return (
+            <nav className="main-nav">
+              <ul>
+                { links }
+              </ul>
+            </nav>
+          );
+        }
+      }
+    </Consumer>
+  
   );
 }
 export default Nav;
