@@ -5,7 +5,8 @@ const NoResults = () => (
     <ul>
       <li className="not-found">
         <h3>No Results Found</h3>
-        <p>You search did not return any results. Please try again.</p>
+        <p>Unfortunately, your search did not return any results. <br />
+          Please try a different search.</p>
       </li>
     </ul>
   </div>

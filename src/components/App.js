@@ -17,7 +17,8 @@ class App extends Component {
     const { q } = queryString.parse(props.location.search);
     this.state = {
       photos: [],
-      query: q
+      query: q,
+      loading: false
     };
   } 
 
@@ -34,11 +35,11 @@ class App extends Component {
     }
   }
 
-
+  // grab data and update state for PhotoContainer
   performSearch = (query = 'cats') => {
-    if (this.state.query) {
-      query = this.state.query;
-    }
+    this.setState({ loading: true });
+    // if query is given, override default param
+    if (this.state.query) { query = this.state.query }
     const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
 
     axios.get(getUrl)
@@ -51,8 +52,8 @@ class App extends Component {
       .catch(error => {
         console.log('Error fetching and parsing data', error);
       })
-      .finally(function () {
-
+      .finally(() => {
+        this.setState({ loading: false });
       });
   }
 
@@ -82,12 +83,12 @@ class App extends Component {
         <Nav updateQuery={this.updateQuery} query={this.state.query} />
         
         <Switch>
-          <Route exact path="/" render={() => <PhotoContainer data={this.state.photos} /> } />
+          <Route exact path="/" render={() => <PhotoContainer isLoading={this.state.loading} data={this.state.photos} /> } />
 
           {/* can't base route off query string 
           https://stackoverflow.com/questions/54635470/how-to-render-components-with-query-strings-react-router */}
 
-          <Route path="/search" render={() => <PhotoContainer data={this.state.photos} /> } />
+          <Route path="/search" render={() => <PhotoContainer isLoading={this.state.loading} data={this.state.photos} query={this.state.query} /> } />
 
           <Route component={NotFound} />
         </Switch>

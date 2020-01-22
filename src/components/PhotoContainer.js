@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Results from './Results';
 import NoResults from './NoResults';
 
-class PhotoContainer extends Component {
-  render() {
+const PhotoContainer = props => {
+  const resultsFound = props.data.length > 0;
 
-  const resultsFound = this.props.data.length > 0;
-  
-    return (
-      <div className="photo-container">
-        { resultsFound ? <Results data={this.props.data} /> : <NoResults /> }
-      </div>
-    );
-  }
-} 
+  return (
+    <div className="photo-container">
+      {
+        props.isLoading ?
+          <h2>Loading...</h2>
+        :
+          resultsFound ? <Results data={props.data} query={props.query} /> : <NoResults /> 
+      }
+    </div>
+  );
+}
 
 export default PhotoContainer;
