@@ -18,8 +18,15 @@ class App extends Component {
     this.state = {
       photos: [],
       query: q,
-      loading: false
+      loading: false,
+      defaultTopics: ["cats", "dogs", "computers"]
     };
+
+    this.fetchDefaultData()
+      .then(response => {
+        console.log(response);
+        // const photos = response.reduce((cur, nex) => cur.data.concat(nex.data), [] )
+    });
   } 
 
   componentDidMount() {
@@ -37,7 +44,7 @@ class App extends Component {
 
   // grab data and update state for PhotoContainer
   performSearch = (query = 'cats') => {
-    this.setState({ loading: true });
+    this.toggleLoadingState();
     // if query is given, override default param
     if (this.state.query) { query = this.state.query }
     const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
@@ -53,7 +60,7 @@ class App extends Component {
         console.log('Error fetching and parsing data', error);
       })
       .finally(() => {
-        this.setState({ loading: false });
+        this.toggleLoadingState();
       });
   }
 
@@ -74,6 +81,31 @@ class App extends Component {
     });
     
     this.updateQuery(newQuery);
+  }
+
+  toggleLoadingState = () => {
+    this.setState({ loading: !this.state.loading });
+  }
+
+  fetchData = async (query) => {
+    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
+    return await axios
+            .get(getUrl)
+            .then(response => {
+              // console.log(response);
+              return {
+                success: true,
+                data: response.data.photos.photo
+              }
+            })
+            .catch(error => {
+              console.log('Error fetching and parsing data', error);
+            });
+  }
+
+  fetchDefaultData = async () => {
+    let networkingRequestPromises = this.state.defaultTopics.map(this.fetchData);
+    return await Promise.all(networkingRequestPromises);
   }
 
   render() {
