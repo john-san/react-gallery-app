@@ -1,29 +1,21 @@
-import React from 'react';
-import { Consumer } from './Context';
+import React, { useContext } from 'react';
+import { AppContext } from './Context';
 import Results from './Results';
 import NoResults from './NoResults';
 
 const PhotoContainer = () => {
+  
+  const { photos, loading } = useContext(AppContext);
+  const resultsFound = photos.length > 0;
   return (
-    <Consumer>
+    <div className="photo-container">
       {
-        context => {
-          const resultsFound = context.photos.length > 0;
-
-          return (
-            <div className="photo-container">
-              {
-                context.loading ?
-                  <h2>Loading...</h2>
-                :
-                  resultsFound ? <Results /> : <NoResults /> 
-              }
-            </div>
-          );
-        }
+        loading ?
+          <h2>Loading...</h2>
+        :
+          resultsFound ? <Results /> : <NoResults /> 
       }
-    </Consumer>
-    
+    </div>
   );
 }
 

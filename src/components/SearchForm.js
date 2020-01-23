@@ -1,13 +1,10 @@
-import React, { Component, useContext } from 'react';
+import React, { Component } from 'react';
 import { AppContext } from './Context';
 
-// const value = useContext(AppContext);
-
 class SearchForm extends Component {
-  
   handleSubmit = e => {
     e.preventDefault();
-    this.props.handleSearch(this.query.value);
+    this.context.actions.handleSearch(this.query.value);
     e.currentTarget.reset();
   }
   
@@ -31,5 +28,9 @@ class SearchForm extends Component {
     );
   }
 } 
+
+// Method for adding Context API to class components
+// https://stackoverflow.com/questions/49809884/access-react-context-outside-of-render-function
+SearchForm.contextType = AppContext;
 
 export default SearchForm;

@@ -10,7 +10,7 @@ import PhotoContainer from './PhotoContainer';
 import NotFound from './NotFound';
 
 import '../css/App.css';
-import apiKey from './../config';
+import apiKey from '../config';
 
 class App extends Component {
   constructor(props) {
@@ -22,8 +22,6 @@ class App extends Component {
       loading: false,
       defaultTopics: ["cats", "dogs", "computers"]
     };
-
-    
   } 
 
   componentDidMount() {
@@ -152,27 +150,26 @@ class App extends Component {
 
   render() {
     return (
-      <Provider value={{
-        photos: this.state.photos,
-        query: this.state.query,
-        loading: this.state.loading,
-        defaultTopics: this.state.defaultTopics,
-        actions: {
-          handleSearch: this.handleSearch
+      <Provider 
+        value={
+          {
+            photos: this.state.photos,
+            query: this.state.query,
+            loading: this.state.loading,
+            defaultTopics: this.state.defaultTopics,
+            actions: {
+              handleSearch: this.handleSearch
+            }       
+          }
         }
-      }}>
+      >
         <div className="App">
-          <SearchForm handleSearch={this.handleSearch} />
+          <SearchForm />
           <Nav />
           
           <Switch>
-            <Route exact path="/" render={() => <PhotoContainer  /> } />
-
-            {/* can't base route off query string 
-            https://stackoverflow.com/questions/54635470/how-to-render-components-with-query-strings-react-router */}
-
-            <Route path="/search" render={() => <PhotoContainer /> } />
-
+            <Route exact path="/" component={PhotoContainer} />
+            <Route path="/search" component={PhotoContainer} />
             <Route component={NotFound} />
           </Switch>
         </div>
