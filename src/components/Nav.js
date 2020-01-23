@@ -5,8 +5,8 @@ import MainNavLink from './MainNavLink';
 const Nav = () => {
   // React v16.6.0 way to use context API
   // https://stackoverflow.com/questions/49870098/how-to-get-the-data-from-react-context-consumer-outside-the-render
-  const { defaultTopics } = useContext(AppContext);
-  const links = defaultTopics
+  const { mainTopics } = useContext(AppContext);
+  const links = Object.keys(mainTopics)
     .map((topic, idx) => 
       <MainNavLink topic={topic} key={idx} />
     );

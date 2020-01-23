@@ -20,21 +20,44 @@ class App extends Component {
       photos: [],
       query: q,
       loading: false,
-      defaultTopics: ["cats", "dogs", "computers"]
+      mainTopics: {
+        "cats" : [], 
+        "dogs" : [], 
+        "computers": []
+      }
     };
+
+    this.fetchMultipleData(this.state.mainTopics)
+      .then(response => {
+        console.log(response);
+        const mainTopicKeys = Object.keys(this.state.mainTopics);
+        const mainTopicPhotos = response.map(topic => topic.data);
+        const newState = mainTopicKeys.map((topic, idx) => {
+          const obj = new Object();
+          obj[topic] = mainTopicPhotos[idx];
+          return obj;
+        });
+        // console.log(mainTopicKeys);
+        // console.log(mainTopicPhotos);
+        // console.dir(newState);
+        // this.setState({
+        //   mainTopics: newState
+        // })
+      })
+    ;
   } 
 
   componentDidMount() {
-    this.performSearch();
+    // this.performSearch();
   }
 
   // re-render on back/forward
   componentDidUpdate() {
     // updateQuery if query has somehow changed
-    const { q } = queryString.parse(this.props.location.search);
-    if (this.state.query !== q) {
-      this.updateQuery(q);
-    }
+    // const { q } = queryString.parse(this.props.location.search);
+    // if (this.state.query !== q) {
+    //   this.updateQuery(q);
+    // }
   }
 
   // grab data and update state for PhotoContainer
@@ -49,7 +72,7 @@ class App extends Component {
         this.setState({
           photos: response.data.photos.photo
         });
-        console.log(response);
+        // console.log(response);
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
@@ -82,31 +105,31 @@ class App extends Component {
     this.setState({ loading: !this.state.loading });
   }
 
-  // fetchData = async (query) => {
-  //   const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
-  //   return await axios
-  //     .get(getUrl)
-  //     .then(response => {
-  //       // console.log(response);
-  //       return {
-  //         success: true,
-  //         data: response.data.photos.photo
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.log('Error fetching and parsing data', error);
-  //     });
-  // }
+  fetchData = async (query) => {
+    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
+    return await axios
+      .get(getUrl)
+      .then(response => {
+        // console.log(response)
+        return {
+          success: true,
+          data: response.data.photos.photo
+        }
+      })
+      .catch(error => {
+        console.log('Error fetching and parsing data', error);
+      });
+  }
 
-  // fetchMultipleData = async () => {
-  //   const networkingRequestPromises = this.state.defaultTopics.map(this.fetchData);
-  //   return await Promise.all(networkingRequestPromises);
-  // }
+  fetchMultipleData = async (object) => {
+    const networkingRequestPromises = Object.keys(object).map(this.fetchData);
+    return await Promise.all(networkingRequestPromises);
+  }
 
   // get random 24 from 3 default topics
   
   // getDefaultPhotos = () => {
-  //   const combined = this.state.defaultTopics
+  //   const combined = this.state.mainTopics
   //     .map(topic => Object.values(topic)[0])
   //     .reduce((a,b) => a.concat(b));
   //   const shuffled = this.shuffleArray(combined);
@@ -122,18 +145,17 @@ class App extends Component {
   //   this.fetchMultipleData()
   //     .then(response => {
   //       this.toggleLoadingState();
-  //       const newState = this.state.defaultTopics
+  //       const newState = this.state.mainTopics
   //         .map((topic, idx) =>  {
   //           const obj = new Object();
   //           obj[topic] = response[idx].data;
   //           return obj;
   //         });
 
-  //       this.setState({ defaultTopics: newState }, this.getDefaultPhotos);
+  //       this.setState({ mainTopics: newState }, this.getDefaultPhotos);
   //     })
   // }
 
-  // get 24 from 1 default topic
 
   // Helper, borrowed from https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb
   // shuffleArray = array => {
@@ -156,7 +178,7 @@ class App extends Component {
             photos: this.state.photos,
             query: this.state.query,
             loading: this.state.loading,
-            defaultTopics: this.state.defaultTopics,
+            mainTopics: this.state.mainTopics,
             actions: {
               handleSearch: this.handleSearch
             }       
@@ -169,6 +191,7 @@ class App extends Component {
           
           <Switch>
             <Route exact path="/" component={PhotoContainer} />
+            <Route path="/main/:topic" component={PhotoContainer} />
             <Route path="/search" component={PhotoContainer} />
             <Route component={NotFound} />
           </Switch>
