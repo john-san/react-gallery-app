@@ -11,6 +11,7 @@ import '../css/App.css';
 
 const App = () => (
   <div className="App">
+    <h1>Photo Search App</h1>
     <SearchForm />
     <Nav />
     

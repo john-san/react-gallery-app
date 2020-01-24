@@ -1,12 +1,28 @@
 @import url('https://fonts.googleapis.com/css?family=Anton|Roboto+Slab&display=swap');
+/* https://stackoverflow.com/questions/49518277/import-css-from-node-modules-in-webpack */
+@import '~animate.css/animate.min.css';
+
+/*** Variables ***/
+:root {
+  --primary-color: #fff;
+  --secondary-color: #000;
+  --accent-color: #5acca1;
+  --accent-color-light: #71ffc9;
+  --accent-color-dark: #449979;
+  --general-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  --general-border: solid 4px var(--secondary-color);
+  --general-border-hover: solid 4px var(--accent-color-light);
+  --background-color: #734941;
+}
 
 body {
+  font-size: 18px;
   text-align: center;
   font-family: 'Roboto Slab', serif;
-  color: #3f4850;
-  background-color: #d1d1d1;
+  color: var(--secondary-color);
+  background-color: var(--background-color);
   /* transparenttextures.com */
-  background-image: url("../images/batthern.png"); 
+  background-image: url("../images/dark-circles.png"); 
 }
 
 
@@ -19,8 +35,8 @@ input {
 }
 
 h2 {
-  font-size: 2em;
-  margin: 52px 0 40px;
+  font-size: 1.5em;
+  margin: 24px 0 40px;
 }
 
 ul {
@@ -32,6 +48,13 @@ a {
   text-decoration: none;
 }
 
+.container {
+  background: white;
+  padding: 5px 8px;
+  border-radius: 8px;
+  box-shadow: var(--general-shadow)
+}
+
 .search-form {
   max-width: 460px;
   display: flex;
@@ -40,7 +63,7 @@ a {
 
 .search-form button {
   outline: none;
-  background-color: #438bbd;
+  background-color: var(--accent-color);
   border: none;
   padding: 0px 15px;
   border-radius: 0 0.35em 0.35em 0;
@@ -65,16 +88,19 @@ input {
 
 .main-nav a {
   display: block;
-  background: #438bbd;
+  background: var(--accent-color);
   border-radius: 3px;
   padding: 5px;
   color: #fff;
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(0,0,0,0.75);
+  box-shadow: var(--general-shadow);
 }
 
 .main-nav .active,
 .main-nav a:hover,
 .search-form button:hover {
-  background-color: #275270;
+  background-color: var(--accent-color-dark);
 }
 
 .photo-container ul {
@@ -90,25 +116,33 @@ input {
   height: 165px;
   overflow: hidden;
   margin-bottom: 15px;
+  border: 1px solid black;
 }
 
 .photo-container ul img {
+  /* https://stackoverflow.com/questions/3029422/how-do-i-auto-resize-an-image-to-fit-a-div-container */
   width: 100%;
-  transform: scale(1.25);
-  transition: transform 1.25s;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s;
 }
 
 .photo-container li:hover img {
-  transform: scale(1.65);
+  transform: scale(1.25);
 }
 
 .photo-container .not-found {
   width: 100%;
 }
 
+/* Override animateCSS */
+.faster {
+  animation-duration: 650ms;
+}
+
 @media only screen and (max-width: 767px)  {
   body {
-    padding-top: 2em;
+    padding-top: 1em;
   }
 
   .photo-container li {
@@ -118,12 +152,13 @@ input {
 
 @media only screen and (min-width: 768px)  {
   body {
-    padding-top: 4em;
+    padding-top: 1em;
   }
 
   .container {
     max-width: 960px;
     margin: auto;
+    padding: 8px 30px
   }
 
   .main-nav ul {
@@ -133,6 +168,6 @@ input {
   
   .main-nav li {
     margin: 10px;
-    width: 100px;
+    width: 150px;
   }
 }

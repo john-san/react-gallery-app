@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
 import apiKey from '../../config';
+import { animateCSS } from '../../helpers';
 
 
 const AppContext = React.createContext();
@@ -103,6 +104,7 @@ class Provider extends Component {
       })
       .finally(() => {
         this.toggleLoadingState();
+        animateCSS('.photo-container', 'zoomIn');
       });
   }
 
@@ -136,7 +138,10 @@ class Provider extends Component {
         this.setState({ mainTopics: newState });
       })
       .then(this.updatePhotos)
-      .finally(this.toggleLoadingState);
+      .finally(() => {
+        this.toggleLoadingState();
+        animateCSS('.photo-container', 'slideInUp');
+      });
   }
 
   // update Photos
@@ -144,7 +149,9 @@ class Provider extends Component {
     this.setState({
       photos: this.state.mainTopics[mainTopic],
       query: mainTopic
-    });
+    },
+      animateCSS('.photo-container', 'fadeIn')
+    );
   }
 
   render() {
