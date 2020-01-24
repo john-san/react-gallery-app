@@ -1,13 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Anton|Roboto+Slab&display=swap');
+
 body {
   text-align: center;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto Slab', serif;
   color: #3f4850;
+  background-color: #d1d1d1;
+  /* transparenttextures.com */
+  background-image: url("../images/batthern.png"); 
+}
+
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Roboto Slab', serif;
+}
+
+input {
+  font-family: 'Roboto Slab', serif;
 }
 
 h2 {
   font-size: 2em;
   margin: 52px 0 40px;
-  text-transform: capitalize;
 }
 
 ul {

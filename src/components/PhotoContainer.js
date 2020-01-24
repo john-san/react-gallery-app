@@ -5,7 +5,6 @@ import NoResults from './NoResults';
 
 const PhotoContainer = () => {
   const { photos, loading } = useContext(AppContext);
-
   const resultsFound = photos.length > 0;
 
   return (
