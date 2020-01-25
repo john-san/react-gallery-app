@@ -17,6 +17,7 @@ State is handled by React's Context API and routes are handled by React Router. 
 ```
 const apiKey = 'YOUR_PUBLIC_KEY';
 export default apiKey;  
+```
 6. Run the command `npm start` to start the app.    
 7. View the project in your browser by going to [`localhost:3000`](http://localhost:3000/)
 
