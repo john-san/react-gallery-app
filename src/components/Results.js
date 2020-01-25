@@ -10,7 +10,6 @@ const Results = () => {
       src={`https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_z.jpg/`} 
       key={photo.id} 
       alt={photo.title}
-      link={`https://www.flickr.com/photos/${photo.owner}/${photo.id}/`}
     />
   );
 

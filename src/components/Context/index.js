@@ -40,33 +40,39 @@ class Provider extends Component {
   // for componentDidUpdate().  will check context based on url and update PhotoState appropriately
   checkPhotoState = () => {
     const path = this.props.location.pathname;
+    const endOfPath = path.split('/').pop();
     const mainTopics = Object.keys(this.state.mainTopics);
-    const pathIncludesMainTopic = mainTopics.some(topic => path.includes(topic));
-    
+    const pathIncludesMainTopic = mainTopics.some(topic => topic === endOfPath);
     if (path === "/") {
       if (this.state.query !== Object.keys(this.state.mainTopics)[0]) {
         this.updatePhotos();
       }
       
-    } else if (path === "/search") {
-      const { q } = queryString.parse(this.props.location.search);
-      
-      if (this.state.query !== q) {
-        this.updateQuery(q);
-      }
-
     } else if (path.includes('main') && pathIncludesMainTopic) {
       const query = path.split('/').pop();
 
       if (query !== this.state.query) {
         this.updatePhotos(query);
       } 
-    } 
+    } else if (path === "/search") {
+      const { q } = queryString.parse(this.props.location.search);
+      
+      if (this.state.query !== q) {
+        this.updateQuery(q);
+      }
+    } else if (path === '/page-not-found') {
+      // do nothing
+    } else {
+      this.props.history.push('/page-not-found')
+    }
   }
 
   /*** General ***/
-  toggleLoadingState = () => {
-    this.setState({ loading: !this.state.loading });
+  // must check if .photo-container has been rendered or else you occasionally get errors
+  animateIfPossible = (animationName = 'fadeIn') => {
+    if (document.querySelector('.photo-container')) {
+      animateCSS('.photo-container', animationName);
+    } 
   }
 
   /*** Data fetching from flickr API  ***/
@@ -103,8 +109,8 @@ class Provider extends Component {
         this.setState({ photos: response.data });
       })
       .finally(() => {
-        this.toggleLoadingState();
-        animateCSS('.photo-container', 'zoomIn');
+        this.setState({ loading: false })
+        animateCSS('.photo-container', 'zoomInUp');
       });
   }
 
@@ -137,20 +143,16 @@ class Provider extends Component {
           .forEach((key, idx) => newState[key] = mainTopicPhotos[idx]);
         this.setState({ mainTopics: newState });
       })
-      .then(this.updatePhotos)
-      .finally(() => {
-        this.toggleLoadingState();
-        animateCSS('.photo-container', 'slideInUp');
-      });
   }
 
-  // update Photos
+  // update Photos from and fadeIn
   updatePhotos = (mainTopic = Object.keys(this.state.mainTopics)[0]) => {
     this.setState({
       photos: this.state.mainTopics[mainTopic],
-      query: mainTopic
+      query: mainTopic,
+      loading: false
     },
-      animateCSS('.photo-container', 'fadeIn')
+      this.animateIfPossible
     );
   }
 
