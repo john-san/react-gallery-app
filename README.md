@@ -1,3 +1,41 @@
+### Team Treehouse Full Stack JavaScript Techdegree
+
+## Unit 7 Project: React Gallery App
+
+**Summary:** This project uses the modern JavaScript front-end library, React, to render a photo gallery.  The photos are fetched from the Flickr API using axios.  Users can view images from one of the main topics or by conducting their own search
+
+State is handled by React's Context API and routes are handled by React Router.  This project demonstrates my ability to utilize a modern JavaScript library and utilize best practices(code organization, state management, routes).
+
+
+**How to use**:
+
+1. Download the project files and extract the folder to your computer.
+2. Open the terminal/command prompt and change directories to the project directory.
+3. Run the command `npm install` to install the project's dependencies.
+4. Sign up for a [non-commercial API Flickr API Key](https://teamtreehouse.com/projects/react-gallery-app).
+5. Create a file named `config.js` and place it in the `src` folder.  Write this into the file.
+```
+const apiKey = 'YOUR_PUBLIC_KEY';
+export default apiKey;  
+6. Run the command `npm start` to start the app.    
+7. View the project in your browser by going to [`localhost:3000`](http://localhost:3000/)
+
+
+**Extra Credit**
+
+1. JS: Loading text is displays when the app is fetching data.
+2. JS: Users are shown a friendly 'no results found' message when their search returns no results.
+3. JS: Users are shown a friendly 404 message when they land on a non-existent route.
+4. JS: Used React Context API to handle state and avoid prop drilling.
+5. JS: Used React Router, React Context, and React lifecycle methods to ensure a smooth experience.  Users can use the refresh/back/forward buttons and expect predictable results.
+6. JS: Photos are loaded for the Main Topics in initial load and stored.  This way, if someone clicks on a main topic, the project grabs the stored data.  This makes for faster performance than making another get request to Flickr.
+7. CSS: Customized colors, fonts, background, borders, and other minor styles.
+8. JS+CSS: Used animate.css to add animations.
+
+
+----
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
