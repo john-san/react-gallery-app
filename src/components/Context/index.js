@@ -79,7 +79,7 @@ class Provider extends Component {
   /*** Data fetching from flickr API  ***/
   // fetch data from flickr API
   fetchData = async (query) => {
-    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
+    const getUrl = decodeURI(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`);
     return await axios
       .get(getUrl)
       .then(response => {
@@ -103,7 +103,7 @@ class Provider extends Component {
   // grab data and update state for PhotoContainer
   performSearch = (query = 'cats') => {
     this.setState({ loading: true });
-    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
+    const getUrl = decodeURI(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`);
     
     this.fetchData(getUrl)
       .then(response => {
