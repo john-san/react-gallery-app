@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
-// import apiKey from '../../config';
 import { animateCSS } from '../../helpers';
 
-let { REACT_APP_API_KEY } = process.env;
-REACT_APP_API_KEY = REACT_APP_API_KEY.replace(/['"]/g, ""); //remove inserted quotes
 
 const AppContext = React.createContext();
 
@@ -80,40 +77,41 @@ class Provider extends Component {
   /*** Data fetching from flickr API  ***/
   // fetch data from flickr API
   fetchData = async (query) => {
-    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
-    return await axios
-      .get(getUrl)
-      .then(response => {
-        return {
-          success: true,
-          data: response.data.photos.photo
-        }
-      })
-      .catch(error => {
-        console.log('Error fetching and parsing data', error);
-      });
+    try {
+      const response = await axios.get("/.netlify/functions/token-hider?query=" + query);
+      return {
+        success: true,
+        data: response.data.photos.photo
+      }
+    } catch(err) {
+      console.log('Error fetching and parsing data', err);
+    }
   }
 
   // run multiple requests from flickr API using an obj's keys
   fetchMultipleData = async (object) => {
-    const networkingRequestPromises = Object.keys(object).map(this.fetchData);
-    return await Promise.all(networkingRequestPromises);
+    try {
+      const networkingRequestPromises = Object.keys(object).map(this.fetchData);
+      return await Promise.all(networkingRequestPromises);
+    } catch(err) {
+      console.log('Error fetching and parsing data for multiple requests', err);
+    }
   }
 
   /*** Search Functionality  ***/
   // grab data and update state for PhotoContainer
   performSearch = (query = 'cats') => {
-    this.setState({ loading: true });
-    const getUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${REACT_APP_API_KEY}&tags=${query}&per_page=24&format=json&nojsoncallback=1`;
-    
-    this.fetchData(getUrl)
+    this.setState({ loading: false })
+    animateCSS('.photo-container', 'zoomInUp');
+
+    this.fetchData(query)
       .then(response => {
-        this.setState({ photos: response.data });
+        this.setState({ 
+          photos: response.data,
+          loading: false
+          },
+          animateCSS('.photo-container', 'zoomInUp'));
       })
-      .finally(() => {
-        this.setState({ loading: false })
-        animateCSS('.photo-container', 'zoomInUp');
-      });
   }
 
   // update query state and then run performSearch after query state has been updated
